@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { addItem, deleteItem } from '../store/cartSlice'
+import { addItem } from '../store/cartSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProducts } from '../store/productSlice'
 
@@ -12,12 +12,18 @@ const Product = () => {
         dispatch(getProducts());
     }, [dispatch])
 
+    if (products.status === 'loading') {
+        return <div className='w-screen text-center'><p className='text-3xl font-bold italic'>Loading...</p></div>
+    }
+
+    if (products.status === 'error') {
+        return <p>Something Went Wrong! Try again later.</p>
+    }
+
     const addToCart = (product) => {
         dispatch(addItem(product))
     }
-    const removeFromCart = (product) => {
-        dispatch(deleteItem(product.id))
-    }
+
     return (
         <div className='grid md:grid-cols-4 p-2'>
             {
@@ -37,7 +43,6 @@ const Product = () => {
                                 >
                                     Add to Cart
                                 </button>
-                                <button className='bg-red-600 text-white rounded-md p-1' onClick={() => removeFromCart(product)}>delete</button>
                             </div>
                         </div>
                     </div>
